@@ -1,4 +1,5 @@
 group 'io.tenmax'
+version '1.0.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -10,7 +11,14 @@ repositories {
     mavenCentral()
 }
 
-mainClassName = 'io.tenmax.proto2json.Proto2Json'
+mainClassName = 'io.tenmax.protokit.Proto2Json'
+
+startScripts {
+    applicationName = 'proto2json'
+}
+
+task createAllStartScripts() << {
+}
 
 def scripts = ['proto2json': 'io.tenmax.protokit.Proto2Json',
                'json2proto': 'io.tenmax.protokit.Json2Proto'
@@ -24,9 +32,11 @@ scripts.each() { scriptName, className ->
         classpath = jar.outputs.files + project.configurations.runtime
     }
     applicationDistribution.into("bin") {
+        duplicatesStrategy= DuplicatesStrategy.EXCLUDE
         from(t)
         fileMode = 0755
     }
+    createAllStartScripts.dependsOn(t)
 }
 
 dependencies {
