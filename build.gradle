@@ -1,0 +1,38 @@
+group 'io.tenmax'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'io.tenmax.proto2json.Proto2Json'
+
+def scripts = ['proto2json': 'io.tenmax.protokit.Proto2Json',
+               'json2proto': 'io.tenmax.protokit.Json2Proto'
+]
+
+scripts.each() { scriptName, className ->
+    def t = tasks.create(name: scriptName + 'StartScript', type: CreateStartScripts) {
+        mainClassName = className
+        applicationName = scriptName
+        outputDir = new File(project.buildDir, 'scripts')
+        classpath = jar.outputs.files + project.configurations.runtime
+    }
+    applicationDistribution.into("bin") {
+        from(t)
+        fileMode = 0755
+    }
+}
+
+dependencies {
+    compile group: 'com.google.protobuf', name: 'protobuf-java-util', version: '3.3.1'
+    compile group: 'com.google.doubleclick', name: 'doubleclick-openrtb', version: '0.9.11'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
