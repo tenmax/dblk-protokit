@@ -21,8 +21,8 @@ public class Json2Proto {
 
             Message.Builder builder = getBuilder(type);
             String basename = FilenameUtils.getBaseName(jsonPath);
-            try (Reader reader = new FileReader(jsonPath);
-                 OutputStream os = new FileOutputStream(basename + ".proto")) {
+            try (Reader reader = new FileReader(new File("/" + jsonPath));
+                 OutputStream os = new FileOutputStream(FilenameUtils.getFullPath(jsonPath) + "/" + basename + ".proto")) {
                 JsonFormat.parser().merge(reader, builder);
 
                 builder.build().writeTo(os);
@@ -32,7 +32,7 @@ public class Json2Proto {
             }
         } else {
             System.out.println("json2proto <REQ|RES> <DOUBLECLICK_REQUEST/RESPONSE_JSON_FILE_PATH>");
-            System.out.println("ex. json2proto REQ bidrequest.json");
+            System.out.println("ex. json2proto REQ ~/bidrequest.json");
 
         }
     }

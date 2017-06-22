@@ -22,8 +22,8 @@ public class Proto2Json {
             Message.Builder builder = getBuilder(type);
 
             String basename = FilenameUtils.getBaseName(protoPath);
-            try (InputStream is = new FileInputStream(protoPath);
-                 Writer w = new FileWriter(basename + ".json")) {
+            try (InputStream is = new FileInputStream(new File(protoPath));
+                 Writer w = new FileWriter( FilenameUtils.getFullPath(protoPath) + basename + ".json")) {
                 w.write(JsonFormat.printer().print(builder.mergeFrom(is)));
             } catch (Exception e) {
                 System.err.println("failing to convert doubleclick protobuf " + type + " binary to json");
@@ -31,7 +31,7 @@ public class Proto2Json {
             }
         } else {
             System.out.println("proto2json <REQ|RES> <DOUBLECLICK_REQUEST/RESPONSE_PROTOBUF_FILE_PATH>");
-            System.out.println("ex. proto2json REQ bidrequest.proto");
+            System.out.println("ex. proto2json REQ ~/bidrequest.proto");
         }
     }
 }
